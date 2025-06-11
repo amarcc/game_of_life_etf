@@ -13,10 +13,10 @@ class StartScreen(Frame):
         self.num_of_alive = IntVar()
 
         self.lab_rows = Label(self, text = 'Rows:')
-        self.lab_rows.grid(row = 1, column = 0, sticky="e")
+        self.lab_rows.grid(row = 1, column = 0, sticky="e", pady = 5)
 
         self.enr_rows = Entry(self, textvariable = self.rows)
-        self.enr_rows.grid(row = 1, column = 1)
+        self.enr_rows.grid(row = 1, column = 1, pady = 5)
 
         self.lab_columns = Label(self, text = 'Columns:')
         self.lab_columns.grid(row = 2, column = 0, sticky="e")
@@ -25,13 +25,13 @@ class StartScreen(Frame):
         self.enr_columns.grid(row = 2, column = 1)
 
         self.lab_num_of_alive = Label(self, text = 'Alive cells:')
-        self.lab_num_of_alive.grid(row = 3, column = 0, sticky="e")
+        self.lab_num_of_alive.grid(row = 3, column = 0, sticky="e", pady = 5)
 
         self.enr_num_of_alive = Entry(self, textvariable = self.num_of_alive)
-        self.enr_num_of_alive.grid(row = 3, column = 1)
+        self.enr_num_of_alive.grid(row = 3, column = 1, pady = 5)
 
         self.screen_btn = Button(self, text = 'Start')
-        self.screen_btn.grid(row = 4, columnspan = 2, pady = (5, 0))
+        self.screen_btn.grid(row = 4, columnspan = 2, pady = 5)
         self.screen_btn.configure(command = self.validate)
 
         self.rand_btn = Button(self, text = 'Randomize')
@@ -54,10 +54,6 @@ class StartScreen(Frame):
                 messagebox.showerror("Invalid input", "Numbers of alive needs to be less then product of rows and columns")
                 return
             else:
-                self.rows = rows_number
-                self.columns = columns_number
-                self.alive = alive_number
-
-                self.set_values(self.rows, self.columns, self.alive)
+                self.set_values(self.rows.get(), self.columns.get(), self.num_of_alive.get())
 
                 self.to_GameScreen()

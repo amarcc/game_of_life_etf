@@ -2,7 +2,7 @@ from Cell import Cell
 import random
 
 class GameController:
-    def __init__(self, rows, columns, alive, grid_canvas, curr_year, ovr_year, curr_gen, ovr_gen):
+    def __init__(self, rows, columns, alive, grid_canvas, curr_year, ovr_year, curr_gen, ovr_gen, end):
         self.rows = rows
         self.columns = columns
         self.alive = alive 
@@ -10,8 +10,9 @@ class GameController:
 
         self.rect_grid = []   
         self.cell_grid = []
-        self.alive_cell = []
-        
+
+        self.end = end
+
         self.future_alive = []
         self.future_dead = []
         
@@ -48,22 +49,14 @@ class GameController:
 
         
     def change_color_state(self, x, y, color, state):
-        if(state == 1 or color == "green"):
-            self.alive_cell.append(self.cell_grid[x][y])
-        else:
-            if self.cell_grid[x][y] in self.alive_cell:
-                self.alive_cell.remove(self.cell_grid[x][y])
-        
         self.cell_grid[x][y].set_state(state)
         self.grid_canvas.itemconfig(self.rect_grid[x][y], fill=color)
                 
     def automatic_change(self, x, y):
         if self.cell_grid[x][y].get_state() == 1:
-            self.alive_cell.remove(self.cell_grid[x][y])
             self.cell_grid[x][y].set_state(0)
-            self.grid_canvas.itemconfig(self.rect_grid[x][y], fill='grey')
+            self.grid_canvas.itemconfig(self.rect_grid[x][y], fill='black')
         else:
-            self.alive_cell.append(self.cell_grid[x][y])
             self.cell_grid[x][y].set_state(1)
             self.grid_canvas.itemconfig(self.rect_grid[x][y], fill='green')
 
@@ -160,11 +153,19 @@ class GameController:
             self.curr_gen.set(self.generation)
             if(self.ovr_gen.get() < self.generation):
                 self.ovr_gen.set(self.generation)
+        else:
+            self.generation = 0
+            self.curr_gen.set(self.generation)
 
         self.future_alive = []
         self.future_dead = []
         
-        w.after(1000, lambda w=w: self.run(w))
+        if self.end.get() != 1:
+            w.after(500, lambda w=w: self.run(w))
+        else:
+            self.generation = 0
+            self.curr_gen.set(self.generation)
+            self.curr_year.set(0)
 
 
     def apply_update(self):
@@ -181,7 +182,7 @@ class GameController:
         
         for cell in self.future_dead:
             cell.reset_year()
-            self.change_color_state(cell.x, cell.y, "gray", 0)
+            self.change_color_state(cell.x, cell.y, "black", 0)
     
     def load_scores(self):
         try:
